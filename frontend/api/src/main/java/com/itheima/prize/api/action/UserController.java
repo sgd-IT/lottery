@@ -40,6 +40,10 @@ public class UserController {
     @ApiOperation(value = "用户信息")
     public ApiResult info(HttpServletRequest request) {
         //TODO：任务3.3-用户模块-用户信息
+        /**
+         * 1、从session中获取用户信息
+         * 2、获取games和products属性值。获取方法：loadService.getGamesNumByUserId(userid)、loadService.getPrizesNumByUserId(userid)
+         */
         return null;
     }
 
@@ -52,6 +56,9 @@ public class UserController {
     })
     public ApiResult hit(@PathVariable int gameid,@PathVariable int curpage,@PathVariable int limit,HttpServletRequest request) {
         //TODO：任务3.4-用户模块-我的奖品
+        /**
+         * hitService.page(new Page<>(curpage,limit),new QueryWrapper<ViewCardUserHit>().eq("userid",userid).eq("gameid",gameid))
+         */
         return null;
     }
 
