@@ -15,9 +15,9 @@ import java.util.List;
 public class LuaScript {
     @Autowired
     private RedisTemplate redisTemplate;
- 
+
     private DefaultRedisScript<Long> script;
- 
+
     @PostConstruct
     public void init(){
         script = new DefaultRedisScript<Long>();
@@ -26,9 +26,9 @@ public class LuaScript {
     }
 
     /*
-    * 调lua脚本获取token
-    * gameId: 活动id， userId：当前登录用户的id， maxCount：当前活动允许的最大中奖次数
-    * */
+     * 调lua脚本获取token
+     * gameId: 活动id， userId：当前登录用户的id， maxCount：当前活动允许的最大中奖次数
+     * */
     public Long tokenCheck(int gameId,int userId,int maxCount){
 
         List<String> keys = new ArrayList();

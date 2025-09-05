@@ -60,6 +60,8 @@ public class UserController {
         userdto.setRealname(user.getRealname());
         userdto.setPhone(user.getPhone());
         userdto.setLevel(user.getLevel());
+        userdto.setCreatetime(user.getCreatetime());
+        userdto.setUpdatetime(user.getUpdatetime());
 
         // 获取用户的游戏数量和奖品数量并设置到用户信息传输对象中
         userdto.setGames(loadService.getGamesNumByUserId(user.getId()));
@@ -98,8 +100,13 @@ public class UserController {
         }
 
         int userid = user.getId();
+        QueryWrapper<ViewCardUserHit> wrapper = new QueryWrapper<>();
+        wrapper.eq("userid",userid);
+        if (gameid != -1) {
+            wrapper.eq("gameid",gameid);
+        }
         // 根据用户ID和游戏ID查询点击记录并进行分页处理
-        Page page = hitService.page(new Page<>(curpage, limit), new QueryWrapper<ViewCardUserHit>().eq("userid", userid).eq("gameid", gameid));
+        Page<ViewCardUserHit> page = hitService.page(new Page<>(curpage, limit), wrapper);
         PageBean<ViewCardUserHit> pageBean = new PageBean<>(page);
         return new ApiResult(1, "成功", pageBean);
     }

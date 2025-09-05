@@ -12,7 +12,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import jdk.vm.ci.meta.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,16 +38,20 @@ public class LoginController {
     public ApiResult login(HttpServletRequest request, @RequestParam String account,@RequestParam String password) {
         //TODO：任务3.1-登录模块-用户登录
         //1、密码错误5次的校验
-        Long times = (Long) redisUtil.get(RedisKeys.USERLOGINTIMES+account);
-        if(times!=null&&times>=5){
-            return new ApiResult(0,"密码错误5次，请5分钟后再登录",null);
+        Object timeobj = redisUtil.get(RedisKeys.USERLOGINTIMES+account);
+        int times = 0;
+        if(timeobj!=null){
+            times = Integer.parseInt(timeobj.toString());
+            if(times>=5){
+                return new ApiResult(0,"密码错误5次，请5分钟后再登录",null);
+            }
         }
         //2、用户名密码校验
         QueryWrapper<CardUser> wrapper = new QueryWrapper<>();
-        wrapper.eq("user_name",account);
+        wrapper.eq("uname",account);
         //密码进行md5加密再去与数据库进行对比
         String md5Pwd = PasswordUtil.encodePassword(password);
-        wrapper.eq("password",md5Pwd);
+        wrapper.eq("passwd",md5Pwd);
         List<CardUser> list = userService.list(wrapper);
         //3、如果用户不为空，保存会话并返回登录信息
         if(!list.isEmpty()){
