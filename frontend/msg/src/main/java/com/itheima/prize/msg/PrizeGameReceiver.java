@@ -1,7 +1,9 @@
 package com.itheima.prize.msg;
 
 
+import com.alibaba.fastjson.JSON;
 import com.itheima.prize.commons.config.RabbitKeys;
+import com.itheima.prize.commons.db.entity.CardUserGame;
 import com.itheima.prize.commons.db.service.CardUserGameService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +24,7 @@ public class PrizeGameReceiver {
     public void processMessage(String message) {
         //TODO：任务6.2-抽奖业务-消息消费-参与的活动
         logger.info("user play : msg={}", message);
+        cardUserGameService.save( JSON.parseObject(message, CardUserGame.class));
 
     }
 }

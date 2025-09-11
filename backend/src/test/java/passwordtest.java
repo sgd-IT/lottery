@@ -1,6 +1,7 @@
+import org.springframework.beans.factory.annotation.Autowired;
+
 public class passwordtest {
 
-    public void pwdTest() throws Exception {
 
-    }
+
 }

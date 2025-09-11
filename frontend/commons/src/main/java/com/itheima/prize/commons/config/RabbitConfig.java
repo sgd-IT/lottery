@@ -6,6 +6,8 @@ import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,11 +21,11 @@ public class RabbitConfig {
     @Autowired
     private CachingConnectionFactory connectionFactory;
 
-
     @Bean
     public Queue getQueueHit() {
         return new Queue(RabbitKeys.QUEUE_HIT);
     }
+
     @Bean
     public Queue getQueuePlay() {
         return new Queue(RabbitKeys.QUEUE_PLAY);
@@ -42,11 +44,17 @@ public class RabbitConfig {
     Binding bindingExchangeDirect() {
         return BindingBuilder.bind(getQueueHit()).to(directExchange()).with(RabbitKeys.QUEUE_HIT);
     }
+
     @Bean
     Binding bindingExchangeDirect2() {
         return BindingBuilder.bind(getQueuePlay()).to(directExchange()).with(RabbitKeys.QUEUE_PLAY);
     }
 
+    // 添加JSON消息转换器
+    @Bean
+    public MessageConverter jsonMessageConverter() {
+        return new Jackson2JsonMessageConverter();
+    }
 
     @Bean
     public RabbitTemplate rabbitTemplate() {
@@ -57,12 +65,16 @@ public class RabbitConfig {
         connectionFactory.setPublisherReturns(true);
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMandatory(true);
-       /**
-        * 如果消息没有到exchange,则confirm回调,ack=false
-        * 如果消息到达exchange,则confirm回调,ack=true
-        * exchange到queue成功,则不回调return
-        * exchange到queue失败,则回调return(需设置mandatory=true,否则不回回调,消息就丢了)
-        */
+
+        // 设置JSON消息转换器
+        rabbitTemplate.setMessageConverter(jsonMessageConverter());
+
+        /**
+         * 如果消息没有到exchange,则confirm回调,ack=false
+         * 如果消息到达exchange,则confirm回调,ack=true
+         * exchange到queue成功,则不回调return
+         * exchange到queue失败,则回调return(需设置mandatory=true,否则不回回调,消息就丢了)
+         */
         rabbitTemplate.setConfirmCallback(new RabbitTemplate.ConfirmCallback() {
             @Override
             public void confirm(CorrelationData correlationData, boolean ack, String cause) {

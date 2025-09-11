@@ -1,5 +1,6 @@
 package com.itheima.prize.api.config;
 
+import com.itheima.prize.commons.config.RedisKeys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -36,7 +37,7 @@ public class LuaScript {
         keys.add(String.valueOf(userId));
         keys.add(String.valueOf(maxCount));
 
-        Long result = (Long) redisTemplate.execute(script,keys,0,0);
+        Long result = (Long) redisTemplate.execute(script,keys);
 
         return result;
     }

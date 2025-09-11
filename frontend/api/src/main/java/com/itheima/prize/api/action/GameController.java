@@ -73,6 +73,8 @@ public class GameController {
         }
         // 当status == -1时，不添加任何条件，查询所有活动
 
+        // 按开始时间降序排序
+        wrapper.orderByDesc("starttime");
         // 从数据库分页查询活动列表
         Page<CardGame> page = gameService.page(new Page<>(curpage, limit), wrapper);
 
@@ -92,22 +94,8 @@ public class GameController {
     public ApiResult<CardGame> info(@PathVariable int gameid) {
         //TODO：任务4.2-活动模块-活的信息
 
-
         // 查询活动信息
         CardGame gameInfo = gameService.getById(gameid);
-        // 增加状态判断逻辑
-        Date now = new Date();
-        if (now.before(gameInfo.getStarttime())) {
-            // 活动未开始
-            gameInfo.setStatus(0);
-        } else if (now.after(gameInfo.getEndtime())) {
-            // 活动已结束，但系统只支持0和1，这里设置为1但前端可能根据时间判断为已结束
-            gameInfo.setStatus(1);
-        } else {
-            // 活动进行中
-            gameInfo.setStatus(1);
-        }
-
         return new ApiResult<>(1, "成功", gameInfo);
     }
 

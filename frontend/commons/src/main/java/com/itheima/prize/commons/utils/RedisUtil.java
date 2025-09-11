@@ -634,4 +634,19 @@ public final class RedisUtil {
             return 0;
         }
     }
+
+    /**
+     * 模糊匹配key
+     *
+     * @param pattern 匹配模式
+     * @return 匹配到的key集合
+     */
+    public Set<String> keys(String pattern) {
+        try {
+            return redisTemplate.keys(pattern);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
