@@ -14,7 +14,7 @@ end
 
 -- 从左侧获取一个token
 local token = redis.call('lpop', 'game_tokens_' .. KEYS[1])
-redis.log(redis.LOG_NOTICE, "-- 获取token，token = " .. token)
+redis.log(redis.LOG_NOTICE, "-- 获取token，token = " .. tostring(token))
 
 -- 当前系统时间
 local curtime = redis.call('TIME')[1]
